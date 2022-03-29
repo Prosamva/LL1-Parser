@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="images/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Fira+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <title>Non-Recursive Predictive LL(1) Parser</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <nav>
+        <h3 class="nav-title">Non-Recursive Predictive LL(1) Parser</h3>
+        <a href="https://github.com/Prosamva" class="by-title">PROSAMVA</a>
+    </nav>
+    <div class="scroll-wrapper">
+        <div class="container">
+            <div class="column">
+                <div class="general">Enter productions of the grammar:</div>
+                <p class="info">
+                    Please note that each character is treated as a symbol and every uppercase alphabet letter is treated as a non-terminal/variable. The tool assumes that the first
+                production given is the starting production of the grammar. <br>
+                
+                Hyphen (<strong>-</strong>) and greater-than (<strong>&gt;</strong>) together signify a rewrite-arrow (<strong>→</strong>). Use a vertical-bar (<strong>|</strong>) for seperating alternatives of a production. Use epsilon
+                (<strong>ε</strong>) to denote a null/empty string.
+                </p>
+                <div class="row">
+                    <div class="column">
+                        <textarea class="mono" name="grammar" id="grammar" rows="10"  cols="20">E->E+T|T
+T->T*F|F
+F->(E)|d</textarea>
+                        <div class="row">
+                            <button class="button" style="text-transform:none;" onclick="insertEpsilon()">ε</button>
+                            <button class="button" onclick="construct()">Construct</button>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="general">E.g.</div>
+                        <button class="button" onclick="setExample(1)">1</button>
+                        <button class="button" onclick="setExample(2)">2</button>
+                        <button class="button" onclick="setExample(3)">3</button>
+                    </div>   
+                </div>
+            </div>
+            <p id="construction-err" class="error-message hidden">Something went wrong! Please check your input.</p>
+            <div id="construction" class="hidden">
+                <div class="row">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="100%" class="brown">GRAMMAR PRE-PROCESSING</th>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2">Given<br>Productions</th>
+                                    <th colspan="2">After eliminating</th>
+                                </tr>
+                                <tr>
+                                    <th>Left Recursion</th>
+                                    <th>Non-Determinism</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td id="data"></td>
+                                <td id="lrp"></td>
+                                <td id="lfp"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="3" class="brown">FIRST/FOLLOW TABLE</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>First</th>
+                                    <th>Follow</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ffb">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="pt" class="mono"></div>
+                </div>
+                <p id="ll1-err" class="error-message hidden">This grammar is not feasible for LL(1) Parser.</p>
+                <div id="prse" class="hidden">
+                    <div class="column">
+                        <div class="general">Enter string to parse:</div>
+                        <input type="text" name="string" id="string" required>
+                        <button class="button" onclick="parseString()">Parse</button>
+                        <div id="pr"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <a href="https://github.com/Prosamva">
+            <div class="row">
+            <img id="footer-logo" src="images/tt.png" alt="logo" />
+            <div id="footer-name">
+                <div><span class="highlight">PRO</span>GRAMMER</div>
+                <div><span class="highlight">SAM</span>UEL</div>
+                <div><span class="highlight">VA</span>SAMSETTI</div>
+            </div>
+        </div>
+        </a>
+    </footer>
+</body>
+
+</html>
