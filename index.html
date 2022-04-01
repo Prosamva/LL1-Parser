@@ -19,23 +19,26 @@
 
 <body>
     <nav>
-        <h3 class="nav-title">Non-Recursive Predictive LL(1) Parser</h3>
-        <a href="https://github.com/Prosamva" class="by-title">PROSAMVA</a>
+        <a href="https://github.com/Prosamva/LL1-Parser/"><h3 class="nav-title">Non-Recursive Predictive LL(1) Parser</h3></a>
+        <div class="by-title">PROSAMVA</div>
     </nav>
     <div class="scroll-wrapper">
         <div class="container">
             <div class="column">
                 <div class="general">Enter productions of the grammar:</div>
                 <p class="info">
-                    Please note that each character is treated as a symbol and every uppercase alphabet letter is treated as a non-terminal/variable. The tool assumes that the first
-                production given is the starting production of the grammar. <br>
-                
-                Hyphen (<strong>-</strong>) and greater-than (<strong>&gt;</strong>) together signify a rewrite-arrow (<strong>→</strong>). Use a vertical-bar (<strong>|</strong>) for seperating alternatives of a production. Use epsilon
-                (<strong>ε</strong>) to denote a null/empty string.
+                    Please note that each character is treated as a symbol and every uppercase alphabet letter is
+                    treated as a non-terminal/variable. The tool assumes that the first
+                    production given is the starting production of the grammar. <br>
+
+                    Hyphen (<strong>-</strong>) and greater-than (<strong>&gt;</strong>) together signify a
+                    rewrite-arrow (<strong>→</strong>). Use a vertical-bar (<strong>|</strong>) for seperating
+                    alternatives of a production. Use epsilon
+                    (<strong>ε</strong>) to denote a null/empty string.
                 </p>
                 <div class="row">
                     <div class="column">
-                        <textarea class="mono" name="grammar" id="grammar" rows="10"  cols="20">E->E+T|T
+                        <textarea class="mono" name="grammar" id="grammar" rows="10" cols="20">E->E+T|T
 T->T*F|F
 F->(E)|d</textarea>
                         <div class="row">
@@ -48,7 +51,7 @@ F->(E)|d</textarea>
                         <button class="button" onclick="setExample(1)">1</button>
                         <button class="button" onclick="setExample(2)">2</button>
                         <button class="button" onclick="setExample(3)">3</button>
-                    </div>   
+                    </div>
                 </div>
             </div>
             <p id="construction-err" class="error-message hidden">Something went wrong! Please check your input.</p>
@@ -106,17 +109,15 @@ F->(E)|d</textarea>
             </div>
         </div>
     </div>
-    
+
     <footer>
         <a href="https://github.com/Prosamva">
-            <div class="row">
             <img id="footer-logo" src="images/tt.png" alt="logo" />
             <div id="footer-name">
                 <div><span class="highlight">PRO</span>GRAMMER</div>
                 <div><span class="highlight">SAM</span>UEL</div>
                 <div><span class="highlight">VA</span>SAMSETTI</div>
             </div>
-        </div>
         </a>
     </footer>
 </body>
