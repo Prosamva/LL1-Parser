@@ -195,6 +195,7 @@ nav {
     font-size: 10pt;
     margin: 12px;
 }
+
 a{
     text-decoration: none;
     color: inherit;
@@ -208,7 +209,6 @@ a{
 }
 
 footer{
-    user-select: none;
     padding: 24px;
     flex-wrap: wrap;
     display: flex;

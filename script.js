@@ -9,7 +9,8 @@ class Production {
     this.left = vals[0];
     var right = [];
     for (var alt of vals[1].split(sep)) {
-      if (alt != epsilon) alt = alt.replaceAll(epsilon, "");
+      if (alt == "") alt = epsilon;
+      else if (alt != epsilon) alt = alt.replaceAll(epsilon, "");
       if (!right.includes(alt)) right.push(alt);
     }
     this.right = right;
@@ -196,7 +197,7 @@ class NonRecursivePredictiveParser {
     return false;
   }
 
-  eliminateLeftRecursion(production, newSymbol, epsilon) {
+  eliminateLeftRecursion(production, newSymbol) {
     var newProduction = new Production();
     newProduction.left = newSymbol;
     var updatedRight = [];
@@ -204,9 +205,10 @@ class NonRecursivePredictiveParser {
     for (var alt of production.right) {
       if (production.left == alt[0])
         newProduction.right.push(alt.substring(1) + newSymbol);
+      else if (alt == this.epsilon) updatedRight.push(newSymbol);
       else updatedRight.push(alt + newSymbol);
     }
-    newProduction.right.push(epsilon);
+    newProduction.right.push(this.epsilon);
     production.right = updatedRight;
     return [production, newProduction];
   }
@@ -247,7 +249,7 @@ class NonRecursivePredictiveParser {
     return factors;
   }
 
-  leftFactorize(production, commonFactors, newSymbols, epsilon) {
+  leftFactorize(production, commonFactors, newSymbols) {
     var newProductions = [];
     newSymbols = [...newSymbols];
     for (var i = 0; i < commonFactors.length; ++i) {
@@ -259,7 +261,7 @@ class NonRecursivePredictiveParser {
       for (var alt of production.right) {
         if (alt.startsWith(commonFactor)) {
           var rem = alt.substring(commonFactor.length);
-          if (rem == "") rem = epsilon;
+          if (rem == "") rem = this.epsilon;
           newProduction.right.push(rem);
         } else updatedRight.push(alt);
       }
@@ -269,20 +271,19 @@ class NonRecursivePredictiveParser {
     return [production, newProductions];
   }
 
-  eliminateAmbiguity(production, newSymbols, epsilon) {
+  eliminateAmbiguity(production, newSymbols) {
     var commonFactors = this.findCommonFactors(production);
     var newProductions = [];
     if (commonFactors.length == 0) return [production].concat(newProductions);
     var [production, newPs] = this.leftFactorize(
       production,
       commonFactors,
-      newSymbols,
-      epsilon
+      newSymbols
     );
     var pNT = production.nonTerminals();
     newSymbols = new Set([...newSymbols].filter((x) => !pNT.has(x)));
     for (var newP of newPs) {
-      var updatedPs = this.eliminateAmbiguity(newP, newSymbols, epsilon);
+      var updatedPs = this.eliminateAmbiguity(newP, newSymbols);
       for (var updatedP of updatedPs) {
         if (!newProductions.includes(updatedP)) {
           newProductions.push(updatedP);
@@ -304,7 +305,8 @@ class NonRecursivePredictiveParser {
             if (sym == this.epsilon) hasEpsilon = true;
             else syms.add(sym);
           }
-          if (!hasEpsilon) break;
+          if (hasEpsilon && i == alt.length - 1) syms.add(this.epsilon);
+          else if (!hasEpsilon) break;
         } else {
           syms.add(c);
           break;
@@ -339,7 +341,7 @@ class NonRecursivePredictiveParser {
         }
         var l = production.left;
         if (i == alt.length && l != nonTerminal) {
-          if(!track.includes(l))
+          if (!track.includes(l))
             for (var fs of this.findFollow(l, track).values()) {
               syms.add(fs);
             }
@@ -461,17 +463,16 @@ function parseString() {
   document.getElementById("pr").innerHTML = pr;
 }
 
-
-var examples=[
-  'E->E+T|T\nT->T*F|F\nF->(E)|d',
-  'S->L=R|R\nR->L\nL->*R|d',
-  'S->CC\nC->cC|d',
+var examples = [
+  "E->E+T|T\nT->T*F|F\nF->(E)|d",
+  "S->L=R|R\nR->L\nL->*R|d",
+  "S->CC\nC->cC|d",
 ];
 
-function setExample(n){
-  document.getElementById('grammar').value = examples[n-1];
+function setExample(n) {
+  document.getElementById("grammar").value = examples[n - 1];
 }
 
-function insertEpsilon(){
-  document.getElementById('grammar').value+='ε';
+function insertEpsilon() {
+  document.getElementById("grammar").value += "ε";
 }
