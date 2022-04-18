@@ -103,7 +103,9 @@ button:hover{
     background-color: #ffab5f;
     font-size: 12pt;
 }
-
+.sm{
+    font-size: 14px;
+}
 thead tr {
     background-color: #468189;
     border: none;

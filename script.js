@@ -51,9 +51,11 @@ class NonRecursivePredictiveParser {
     }
 
     // Remove Left Recursion if exists
+    var cps = [];
     var lrps = [];
     for (var l in productions) {
       var production = productions[l];
+      cps.push(production.toString());
       var newSymbol = [...newSymbols][0];
       var result = this.eliminateLeftRecursion(production, newSymbol, epsilon);
       if (result == false) {
@@ -67,14 +69,16 @@ class NonRecursivePredictiveParser {
         lrps.push(p.toString());
       }
     }
+    this.cps = cps;
     this.lrps = lrps;
 
     // Remove Ambiguity if exists
     for (var l in productions) {
       var production = productions[l];
-      result = this.eliminateAmbiguity(production, newSymbols, epsilon);
+      result = this.eliminateAmbiguity(production, newSymbols);
+      console.log(result)
       if (result.length == 1) continue;
-      for (var p in result) {
+      for (var p of result) {
         p.right.sort();
         productions[p.left] = p;
         var pNT = p.nonTerminals();
@@ -267,12 +271,14 @@ class NonRecursivePredictiveParser {
       }
       production.right = [commonFactor + newSymbol].concat(updatedRight);
       newProductions.push(newProduction);
+      console.log(newProductions);
     }
     return [production, newProductions];
   }
 
   eliminateAmbiguity(production, newSymbols) {
-    var commonFactors = this.findCommonFactors(production);
+    var commonFactors = [...this.findCommonFactors(production)];
+    console.log(commonFactors);
     var newProductions = [];
     if (commonFactors.length == 0) return [production].concat(newProductions);
     var [production, newPs] = this.leftFactorize(
@@ -280,6 +286,7 @@ class NonRecursivePredictiveParser {
       commonFactors,
       newSymbols
     );
+    console.log(newPs);
     var pNT = production.nonTerminals();
     newSymbols = new Set([...newSymbols].filter((x) => !pNT.has(x)));
     for (var newP of newPs) {
@@ -419,10 +426,10 @@ function construct() {
       production.right.sort();
       productions.push(production);
     }
-    document.getElementById("data").innerHTML = productions.join("<br>");
     parser = new NonRecursivePredictiveParser(productions);
     var ps = [];
     for (var k in parser.productions) ps.push(parser.productions[k].toString());
+    document.getElementById("data").innerHTML = parser.cps.join("<br>");
     document.getElementById("lrp").innerHTML = parser.lrps.join("<br>");
     document.getElementById("lfp").innerHTML = ps.join("<br>");
     document.getElementById("ffb").innerHTML = parser.firstFollowTableRows();
@@ -466,7 +473,9 @@ function parseString() {
 var examples = [
   "E->E+T|T\nT->T*F|F\nF->(E)|d",
   "S->L=R|R\nR->L\nL->*R|d",
-  "S->CC\nC->cC|d",
+  "A->aAB|aBc\nA->aAc\nB->b\n",
+  // "S->iCtSes|a\nC->b\nS->iCtS",
+  // "S->CC\nC->cC|d",
 ];
 
 function setExample(n) {
